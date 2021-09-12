@@ -30,10 +30,8 @@ class DDoSMainWindow(QMainWindow):
 
         self.ui.show()
 
-        for i in range(4):
-            for j in range(5):
-                self.ui.VM_tiles.addWidget(create_tile(f"VM {i} {j}"), i, j)
-
+        # store all tiles with VMs status
+        self.tiles = {}
         # -----------------
         # self.ui.group_homing.setEnabled(True)
 

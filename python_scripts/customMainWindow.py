@@ -25,9 +25,27 @@ class DDoSMainWindow(QMainWindow):
         designer_file.close()
 
         grid_layout = QGridLayout()
-        grid_layout.addWidget(self.ui)
+        grid_layout.addWidget(self.ui, column=0, row=0)
         self.ui.setLayout(grid_layout)
 
         self.ui.show()
+
+        for i in range(4):
+            for j in range(5):
+                self.ui.VM_tiles.addWidget(create_tile(f"VM {i} {j}"), i, j)
+
         # -----------------
         # self.ui.group_homing.setEnabled(True)
+
+
+def create_tile(name):
+
+    designer_file = QFile("tile.ui")
+    designer_file.open(QFile.ReadOnly)
+    loader = QUiLoader()
+
+    tile = loader.load(designer_file)
+    designer_file.close()
+
+    tile.label_vm_name.setText(name)
+    return tile

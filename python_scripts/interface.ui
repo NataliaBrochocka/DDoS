@@ -16,7 +16,7 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
-     <layout class="QGridLayout" name="gridLayout">
+     <layout class="QGridLayout" name="all_window_gridLayout">
       <item row="0" column="0">
        <widget class="QLabel" name="title">
         <property name="maximumSize">
@@ -41,7 +41,7 @@
        </widget>
       </item>
       <item row="1" column="0">
-       <layout class="QGridLayout" name="gridLayout_2"/>
+       <layout class="QGridLayout" name="VM_tiles" rowstretch="0"/>
       </item>
      </layout>
     </item>

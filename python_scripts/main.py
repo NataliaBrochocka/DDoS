@@ -21,6 +21,11 @@ def main():
     http_server_thread.start()
     app.aboutToQuit.connect(lambda: http_server.shutdown())
     # --------------- end of HTTP SERVER ---------------
+
+    # --------------- CONNECTIONS ---------------
+    http_server.RequestHandlerClass.signals.message.connect(window.update_vm_info)
+    # -------------------------------------------
+
     app.exec_()
 
 

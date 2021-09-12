@@ -1,9 +1,16 @@
-from http.server import HTTPServer, BaseHTTPRequestHandler
+from PySide2.QtCore import *
 
+from http.server import HTTPServer, BaseHTTPRequestHandler
 from io import BytesIO
 
 
+class SimpleHTTPRequestHandlerSignals(QObject):
+    message = Signal(bytes)
+
+
 class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
+
+    signals = SimpleHTTPRequestHandlerSignals()
 
     def do_GET(self):
         self.send_response(200)
@@ -19,7 +26,7 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
         response.write(b'This is POST request. ')
         response.write(b'Received: ')
         response.write(body)
-        print(body)
+        self.signals.message.emit(body)
         self.wfile.write(response.getvalue())
 
 

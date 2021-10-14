@@ -1,5 +1,6 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
+$attack_type=$1
 
 # All Vagrant configuration is done below. The "2" in Vagrant.configure
 # configures the configuration version (we support older styles for
@@ -12,7 +13,7 @@ Vagrant.configure("2") do |config|
 
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://vagrantcloud.com/search.
-  N = 1
+  N = 0
 
   (0..N).each do |i| 
   config.vm.define "bot#{i}" do |node|
@@ -22,6 +23,17 @@ Vagrant.configure("2") do |config|
     node.vm.provision "shell", path: "./src/tool_setup.sh"
     node.vm.provision "file", source:"./src/telegraf.conf", destination: "/home/vagrant/telegraf.conf"
     node.vm.provision "shell", path: "./src/run_telegraf.sh"
+    if ($attack_type == "dns_amplification") then
+      node.vm.provision "shell", path: "./DNS_config/change_resolver.sh"
+    end
+  end
+  if ($attack_type == "dns_amplification") then
+    config.vm.define "dns_server" do |dns|
+      dns.vm.hostname = "DNS"    
+      dns.vm.box = "ubuntu/bionic64"
+      dns.vm.network "private_network", ip:"192.168.27.9"
+      dns.vm.provision "shell", path: "./DNS_config/setup_DNS.sh"
+    end
   end
   end
 

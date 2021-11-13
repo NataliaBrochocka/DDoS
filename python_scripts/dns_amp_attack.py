@@ -15,4 +15,4 @@ udp = UDP(dport=53)
 dns = DNS(rd=1, qdcount=1, qd=DNSQR(qname=domain, qtype=255))
 
 request = (ip/udp/dns)
-send(request, count=number_of_packets)
+send(request, count=int(number_of_packets))

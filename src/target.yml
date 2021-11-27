@@ -1,0 +1,23 @@
+---
+configs:
+  dns_amplification:
+    name: "dns_server"
+    hostname: "DNS"
+    vbox: "ubuntu/bionic64"
+    net_type: "private_network"
+    ip_addr: "192.168.27.9"
+    script_path: "./dns_config/setup_dns.sh"
+    gui: false
+    ram: 1024
+    cpus: 1
+  syn_flood:
+    name: "web_server"
+    hostname: "WEB"
+    vbox: "ubuntu/bionic64"
+    net_type: "private_network"
+    ip_addr: "192.168.27.8"
+    script_path: "./web_config/setup_web.sh"
+    gui: false
+    ram: 1024
+    cpus: 1
+...

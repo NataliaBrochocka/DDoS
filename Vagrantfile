@@ -1,6 +1,16 @@
+# encoding: utf-8
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 $attack_type=$1
+
+#----- use YAML config declared in /vagrant/src/target.yml -----#
+ATTACK_TYPE = ENV["ATTACK_TYPE"]
+
+require 'yaml'
+current_dir = File.dirname(File.expand_path(__FILE__))
+config_file = YAML.load_file("#{current_dir}/src/target.yml")
+target_config = config_file['configs'][ATTACK_TYPE]
+#---------------------------------------------------------------#
 
 # All Vagrant configuration is done below. The "2" in Vagrant.configure
 # configures the configuration version (we support older styles for
@@ -15,26 +25,40 @@ Vagrant.configure("2") do |config|
   # boxes at https://vagrantcloud.com/search.
   N = 0
 
-  (0..N).each do |i| 
-  config.vm.define "bot#{i}" do |node|
-    node.vm.hostname = "BOT#{i}"
-    node.vm.box = "ubuntu/bionic64"
-    node.vm.network "private_network", ip:"192.168.27.#{10+i}"
-    node.vm.provision "shell", path: "./src/tool_setup.sh"
-    node.vm.provision "file", source:"./src/telegraf.conf", destination: "/home/vagrant/telegraf.conf"
-    node.vm.provision "shell", path: "./src/run_telegraf.sh"
-    if ($attack_type == "dns_amplification") then
-      node.vm.provision "shell", path: "./DNS_config/change_resolver.sh"
+    config.vm.define target_config['name'] do |target|
+      target.vm.hostname = target_config['hostname']
+      target.vm.box = target_config['vbox']
+      target.vm.network target_config['net_type'], ip: target_config['ip_addr']
+      target.vm.provision "shell", path: target_config['script_path']
+      if (ATTACK_TYPE == "syn_flood") then
+        target.vm.network "forwarded_port", guest: 80, host: 8080
+      end
+
+      target.vm.provider "virtualbox" do |vb|
+        vb.gui = target_config['gui']
+        vb.name = target_config['name']
+        vb.memory = target_config['ram']
+        vb.cpus = target_config['cpus']
+      end
     end
-  end
-  if ($attack_type == "dns_amplification") then
-    config.vm.define "dns_server" do |dns|
-      dns.vm.hostname = "DNS"    
-      dns.vm.box = "ubuntu/bionic64"
-      dns.vm.network "private_network", ip:"192.168.27.9"
-      dns.vm.provision "shell", path: "./DNS_config/setup_DNS.sh"
+
+    (0..N).each do |i| 
+    config.vm.define "bot#{i}" do |node|
+      node.vm.hostname = "BOT#{i}"
+      node.vm.box = "ubuntu/bionic64"
+      node.vm.network "private_network", ip:"192.168.27.#{10+i}"
+
+      node.vm.provision "file", source:"./tmp_src/go1.17.linux-amd64.tar.gz", destination: "/home/vagrant/tmp_src/go1.17.linux-amd64.tar.gz"
+      node.vm.provision "file", source:"./tmp_src/telegraf_1.20.0~rc0-1_amd64.deb", destination: "/home/vagrant/tmp_src/telegraf_1.20.0~rc0-1_amd64.deb"
+      node.vm.provision "file", source:"./src/telegraf.conf", destination: "/home/vagrant/telegraf.conf"
+    
+      node.vm.provision "shell", path: "./src/tool_setup.sh"
+      node.vm.provision "shell", path: "./src/run_telegraf.sh"
+      
+      if (ATTACK_TYPE == "dns_amplification") then
+        node.vm.provision "shell", path: "./DNS_config/change_resolver.sh"
+      end
     end
-  end
   end
 
   # Disable automatic box update checking. If you disable this, then
@@ -46,7 +70,7 @@ Vagrant.configure("2") do |config|
   # within the machine from a port on the host machine. In the example below,
   # accessing "localhost:8080" will access port 80 on the guest machine.
   # NOTE: This will enable public access to the opened port
-  # config.vm.network "forwarded_port", guest: 80, host: 8080
+#  config.vm.network "private_network", ip: "192.168.33.10"
 
   # Create a forwarded port mapping which allows access to a specific port
   # within the machine from a port on the host machine and only allow access
@@ -55,7 +79,7 @@ Vagrant.configure("2") do |config|
 
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.
-#  config.vm.network "private_network", ip: "192.168.33.10"
+  # config.vm.network "private_network", ip: "192.168.33.10"
 
   # Create a public network, which generally matched to bridged network.
   # Bridged networks make the machine appear as another physical device on

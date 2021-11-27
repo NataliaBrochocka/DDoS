@@ -1,0 +1,15 @@
+;
+; BIND data file for DDOS DNS amplifications attack
+;
+$TTL    3600
+@       IN      SOA     ns.ddos.edu. root.ddos.edu. (
+                   2021102304           ; Serial
+                         3600           ; Refresh [1h]
+                          600           ; Retry   [10m]
+                        86400           ; Expire  [1d]
+                          600 )         ; Negative Cache TTL [1h]
+;
+@           IN      NS      ns.ddos.edu.
+@           IN      A       192.168.27.9
+;
+ns          IN      A       192.168.27.9

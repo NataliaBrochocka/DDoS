@@ -1,4 +1,0 @@
-python3=3.6.9
-virtualbox=6.1.18
-vagrant=2.2.18
-docker=20.10.8

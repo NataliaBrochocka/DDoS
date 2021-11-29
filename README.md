@@ -21,7 +21,7 @@ You can find them specified in requirements.txt. Setup script use this file as a
 
 ### Environment - Architecture
 
-![private_network_setup_schema](../img/private_network_setup.png)
+![private_network_setup_schema](img/private_network_setup.png)
 
 
 ### [Windows] Setup environment

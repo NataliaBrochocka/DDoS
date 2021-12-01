@@ -14,19 +14,22 @@ Vagrant.configure("2") do |config|
   # boxes at https://vagrantcloud.com/search.
   N = 1
 
-  (0..N).each do |i| 
-  config.vm.define "bot#{i}" do |node|
-    node.vm.hostname = "BOT#{i}"
-    node.vm.box = "ubuntu/bionic64"
-    node.vm.network "private_network", ip:"192.168.27.#{10+i}"
-    
-    node.vm.provision "file", source:"./tmp_src/go1.17.linux-amd64.tar.gz", destination: "/home/vagrant/tmp_src/go1.17.linux-amd64.tar.gz"
-    node.vm.provision "file", source:"./tmp_src/telegraf_1.20.0~rc0-1_amd64.deb", destination: "/home/vagrant/tmp_src/telegraf_1.20.0~rc0-1_amd64.deb"
-    node.vm.provision "file", source:"./src/telegraf.conf", destination: "/home/vagrant/telegraf.conf"
-    
-    node.vm.provision "shell", path: "./src/tool_setup.sh"
-    node.vm.provision "shell", path: "./src/run_telegraf.sh"
-  end
+  (0..N).each do |i|
+    config.vm.define "bot#{i}" do |node|
+      node.vm.hostname = "BOT#{i}"
+      node.vm.box = "ubuntu/bionic64"
+      node.vm.network "private_network", ip:"192.168.27.#{10+i}"
+
+      node.vm.provision "file", source:"./tmp_src/go1.17.linux-amd64.tar.gz", destination: "/home/vagrant/tmp_src/go1.17.linux-amd64.tar.gz"
+      node.vm.provision "file", source:"./tmp_src/telegraf_1.20.0~rc0-1_amd64.deb", destination: "/home/vagrant/tmp_src/telegraf_1.20.0~rc0-1_amd64.deb"
+      node.vm.provision "file", source:"./src/telegraf.conf", destination: "/home/vagrant/telegraf.conf"
+
+      node.vm.provision "shell", path: "./src/tool_setup.sh"
+      node.vm.provision "shell", path: "./src/run_telegraf.sh"
+
+      node.vm.provision "file", source:"./traffic_simulation/traffic_data.pcap", destination: "/home/vagrant/traffic_data.pcap"
+      node.vm.provision "shell", path: "./traffic_simulation/run_traffic_simulation.sh"
+    end
   end
 
   # Disable automatic box update checking. If you disable this, then

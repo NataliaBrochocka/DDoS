@@ -1,0 +1,10 @@
+options {
+        directory "/var/cache/bind";
+        empty-zones-enable yes; 
+
+        dnssec-validation auto;
+        auth-nxdomain no;    # conform to RFC1035
+        listen-on-v6 { none; };
+        listen-on { 127.0.0.1; 192.168.27.9; };
+        allow-transfer { none; };
+};

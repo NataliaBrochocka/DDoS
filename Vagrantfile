@@ -51,10 +51,12 @@ Vagrant.configure("2") do |config|
       node.vm.provision "file", source:"./tmp_src/go1.17.linux-amd64.tar.gz", destination: "/home/vagrant/tmp_src/go1.17.linux-amd64.tar.gz"
       node.vm.provision "file", source:"./tmp_src/telegraf_1.20.0~rc0-1_amd64.deb", destination: "/home/vagrant/tmp_src/telegraf_1.20.0~rc0-1_amd64.deb"
       node.vm.provision "file", source:"./src/telegraf.conf", destination: "/home/vagrant/telegraf.conf"
-    
+
       node.vm.provision "shell", path: "./src/tool_setup.sh"
       node.vm.provision "shell", path: "./src/run_telegraf.sh"
-      
+
+      node.vm.provision "file", source:"./traffic_simulation/traffic_data.pcap", destination: "/home/vagrant/traffic_data.pcap"
+      node.vm.provision "shell", path: "./traffic_simulation/run_traffic_simulation.sh"
       if (ATTACK_TYPE == "dns_amplification") then
         node.vm.provision "shell", path: "./DNS_config/change_resolver.sh"
       end

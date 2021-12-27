@@ -4,8 +4,7 @@
 
 ### Set up the environment observability 
 1. Set up environment observability from [this](doc/observability.md) instruction
-2. Run `./pre-vagrant.sh`
-5. Done. 
+2. Done.
 
 ## ENVIRONMENT
 

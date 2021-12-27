@@ -75,6 +75,30 @@ function InstallChocolatey{
     }
 }
 
+function PreVagrant(){
+    write-host("`n----------------------------------------------------------------------")
+    write-host("[INFO] Downloading telegraf-related pkgs..")
+
+    New-Item -ItemType Directory -Force -Path .\tmp_src
+    $go_path='.\tmp_src\go1.17.linux-amd64.tar.gz'
+    if(!(Test-Path $go_path)){
+        write-host("Downloading go")
+        Invoke-WebRequest https://golang.org/dl/go1.17.linux-amd64.tar.gz -UseBasicParsing -OutFile $go_path
+    } else{
+        write-host("`n----------------------------------------------------------------------")
+        write-host("[INFO] Go for VM's is already downloaded")
+    }
+
+    $telegraf_path='.\tmp_src\telegraf_1.20.0~rc0-1_amd64.deb'
+    if(!(Test-Path $telegraf_path)){
+        write-host("Downloading telegraf")
+        Invoke-WebRequest https://dl.influxdata.com/telegraf/releases/telegraf_1.20.0~rc0-1_amd64.deb -UseBasicParsing -OutFile $telegraf_path
+    } else{
+        write-host("`n----------------------------------------------------------------------")
+        write-host("[INFO] Telegraf for VM's is already downloaded")
+    }
+}
+
 function InstallSoftware($required_software, $required_version){
     choco install --pre $required_software -y --version=$required_version 2>&1 >> logs.txt
     $installation_exit_code=$?
@@ -152,6 +176,7 @@ function InitEnvironment(){
 function main(){
     write-host("####################### Setting up environment #######################")
     InstallChocolatey
+    PreVagrant
     CheckIfInstalled($REQUIREMENTS)
     CreateDirStructure($SHARED_DIRS)
     InitEnvironment

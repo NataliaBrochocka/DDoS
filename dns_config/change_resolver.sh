@@ -1,4 +1,5 @@
 enable_priv_net_dns(){
+    HOST_PRIV_IP=$(grep -E -o "([0-9]{1,3}[\.]){3}[0-9]{1,3}/[0-9]{1,2}" /etc/netplan/50-vagrant.yaml)
     echo -e "\n----------------------------------------------------------------------"
     echo -e "[INFO] Enabling DNS in private network.." 
     sudo echo "
@@ -9,7 +10,7 @@ network:
   ethernets:
     enp0s8:
       addresses:
-      - 192.168.27.10/24
+      - $HOST_PRIV_IP
       nameservers:
         addresses:
         - 192.168.27.9            # Private IP for DNS

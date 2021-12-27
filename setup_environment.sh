@@ -65,6 +65,26 @@ prepare_environ(){
     dos2unix $PWD/{shared_dirs.txt,requirements.txt}
 }
 
+pre_vagrant(){
+    echo -e "\n----------------------------------------------------------------------"
+    echo -e "[INFO] Downloading telegraf-related pkgs.."
+    if [ ! -f ./tmp_src/go1.17.linux-amd64.tar.gz ]; then
+        echo "Downloading go"
+        wget https://golang.org/dl/go1.17.linux-amd64.tar.gz --directory-prefix=./tmp_src
+    else
+        echo -e "\n----------------------------------------------------------------------"
+        echo "[INFO] Go for VM's is already downloaded"
+    fi
+
+    if [ ! -f ./tmp_src/telegraf_1.20.0~rc0-1_amd64.deb ]; then
+        echo "Downloading telegraf"
+        wget https://dl.influxdata.com/telegraf/releases/telegraf_1.20.0~rc0-1_amd64.deb --directory-prefix=./tmp_src
+    else
+        echo -e "\n----------------------------------------------------------------------"
+        echo "[INFO] Telegraf for VM's is already downloaded"
+    fi
+}
+
 install_package(){
     ## install required packages in propoer version ##
     required_package=$1
@@ -210,6 +230,7 @@ main(){
     echo -e "####################### Setting up environment #######################"
     identify_pkg_manager
     prepare_environ
+    pre_vagrant
     check_if_installed $REQUIREMENTS
     create_dir_structure $SHARED_DIRS
     init_environment

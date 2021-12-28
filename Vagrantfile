@@ -52,6 +52,7 @@ Vagrant.configure("2") do |config|
       node.vm.provision "file", source:"./tmp_src/telegraf_1.20.0~rc0-1_amd64.deb", destination: "/home/vagrant/tmp_src/telegraf_1.20.0~rc0-1_amd64.deb"
       node.vm.provision "file", source:"./src/telegraf.conf", destination: "/home/vagrant/telegraf.conf"
       node.vm.provision "file", source:"./python_scripts/dns_amp_attack.py", destination: "/home/vagrant/dns_amp_attack.py"
+      node.vm.provision "file", source:"./detect_dns_amp_attack.sh", destination: "/home/vagrant/detect_dns_amp_attack.sh"
 
       node.vm.provision "shell", path: "./src/tool_setup.sh"
       node.vm.provision "shell", path: "./src/run_telegraf.sh"
